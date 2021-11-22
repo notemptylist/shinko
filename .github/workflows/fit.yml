@@ -38,7 +38,7 @@ jobs:
             pip install sklearn
       - name: Fit order parameters
         run: |
-          python -u fit_arima.py -n 300
+          python -u fit_arima.py -n 400
       - name: Show git status
         run: | 
           git status
