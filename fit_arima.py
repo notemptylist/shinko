@@ -63,6 +63,7 @@ def measure_rmse(actual, predicted):
 def walk_forward_validation(data, order):
     predictions = list()
     train, test = train_test_split(data)
+    print(f"Split data: {len(train)} in train, {len(test)} in test.")
     history = [x for x in train]
 
     for i in range(len(test)):
@@ -90,30 +91,30 @@ def score_model(data, order, debug=False):
 
     if result:
         print(f"> ARIMA({key}) {result}", flush=True)
-    return (key, result)
+    return {key: result}
 
 def grid_search(data, grid, parallel=True):
     """
     Perform grid search over orders in grid against data.
     ntest significes 
     """
-    scores = None
+    scores = dict()
+    print(f"Searching grid with {len(data)} elements.")
     if parallel:
         executor = Parallel(n_jobs=cpu_count(), backend='multiprocessing')
         tasks = (delayed(score_model)(data, order) for order in grid)
-        scores = executor(tasks)
+        results = executor(tasks)
+        for x in results:
+            scores.update(x)
     else:
-        scores = [score_model(data, order) for order in grid]
-
-    scores = [r for r in scores if r[1] != None]
-    scores.sort(key=lambda x: x[1])
+        scores.update({score_model(data, order) for order in grid})
     return scores
 
 def main(args):
     print(args)
     nlags = 400
 
-    ps = list(range(0, 11, 2))
+    ps = [0, 1, 3, 4, 6]
     ds = list(range(0, 3))
     qs = list(range(0, 3))
 
@@ -121,17 +122,23 @@ def main(args):
         stream = select_stream()
         print(f"Selected stream {stream}")
         df = df_from_lagged(stream)
-
+        if len(df) < 100:
+            print(f"Not enough lag values {len(df)}, skipping")
+            continue
         if len(np.unique(df.values)) < 0.3 * len(df.values):
             print(f"Quantized data, skipping")
             continue
-
         break
 
+    if nlags > len(df):
+        nlags = len(df)
+
     grid = make_grid(ps, ds, qs)
-    scores = grid_search(df['y'].values[:nlags], grid)    
+    scores = grid_search(df['y'].values[:nlags], grid)
     print(scores)
-    best_order = sorted(scores, key=lambda x: x[1])
+    scores = sorted(scores, key=scores.get)
+    best_order = scores[0]
+    print(f"{stream} : best order = {best_order}")
     fname = os.path.join(FIT_PATH, stream)
     with  open(fname, 'w+') as fp:
         json.dump(scores, fp)
