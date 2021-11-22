@@ -139,7 +139,7 @@ def main(args):
     with  open(fname, 'w+') as fp:
         json.dump(scores, fp)
 
-    return True
+    return 0
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
