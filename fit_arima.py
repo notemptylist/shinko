@@ -111,10 +111,7 @@ def grid_search(data, grid, parallel=True):
 
 def main(args):
     print(args)
-    try:
-        nlags = int(args.nlags)
-    except:
-        nlags = 500
+    nlags = 400
 
     ps = list(range(0, 11, 2))
     ds = list(range(0, 3))
