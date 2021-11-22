@@ -35,10 +35,10 @@ jobs:
             pip install py4j
             pip install git+https://github.com/microprediction/microprediction.git
             pip install --upgrade statsmodels
-            pip install matplotlib
+            pip install sklearn
       - name: Fit order parameters
         run: |
-          python arima_fit.py
+          python -u fit_arima.py
       - name: Show git status
         run: | 
           git status
