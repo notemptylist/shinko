@@ -140,7 +140,7 @@ def main(args):
     best_order = scores[0]
     print(f"{stream} : best order = {best_order}")
     fname = os.path.join(FIT_PATH, stream)
-    with  open(fname, 'w+') as fp:
+    with open(fname, 'w+') as fp:
         json.dump(scores, fp)
 
     return 0
