@@ -31,6 +31,7 @@ def df_from_lagged(name='die.json'):
     df = pd.DataFrame({'Date' : pd.Series(times), 'y' : pd.Series(values)})
     df['Date'] = pd.to_datetime(df['Date'], unit='s')
     df = df.set_index(['Date'])
+    df.index = df.index.to_period("5T")
     return df
 
 def select_stream():
@@ -131,13 +132,12 @@ def get_work(stream=None):
         break
     grid = make_grid()
     spec_url = urljoin(FIT_URL, stream)
-    try:
-        print(f"Trying spec url: {spec_url}")
-        spec = getjson(spec_url)
-        spec = FitSpec(*spec)
+    print(f"Trying spec url: {spec_url}")
+    spec = getjson(spec_url)
+    if spec:
         print(f"Got spec from URL {spec}")
-    except Exception as ex:
-        print(ex)
+        spec = FitSpec(*spec)
+    else:
         print("Could not find spec, initializing.")
         spec = FitSpec(stream, 400, grid, [], [])
         print(spec)
