@@ -3,11 +3,11 @@ import sys
 import json
 import time
 import random
-import getjson
 import argparse
 import numpy as np
 import pandas as pd
 from math import sqrt
+from getjson import getjson
 from urllib.parse import urljoin
 from joblib import Parallel, delayed
 from multiprocessing import cpu_count
@@ -132,9 +132,10 @@ def get_work(stream=None):
     try:
         print(f"Trying spec url: {spec_url}")
         spec = getjson(spec_url)
-        spec = FitSpec(**spec)
+        spec = FitSpec(*spec)
         print(f"Got spec from URL {spec}")
-    except:
+    except Exception as ex:
+        print(ex)
         print("Could not find spec, initializing.")
         spec = FitSpec(stream, 400, grid, [], [])
         print(spec)
@@ -156,7 +157,10 @@ def main(args):
 
     # merge results into spec, remove the processed orders from todo, and write it out.
     for k in scores:
-        spec.todo.remove(k[0])
+        try:
+            spec.todo.remove(k[0])
+        except ValueError:
+            pass
         spec.results.append(k)
     spec.tstamp.append(time.time())
     fname = os.path.join(FIT_PATH, spec.stream)
