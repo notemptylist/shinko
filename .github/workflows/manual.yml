@@ -1,0 +1,68 @@
+# This is a basic workflow that is manually triggered
+
+name: Evaluate a single stream
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Stream to evaluate'
+        # Default value if no value is explicitly provided
+        default: ''
+        # Input has to be provided for the workflow to run
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest  
+    timeout-minutes: 10
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install wheel
+            pip install git+https://github.com/microprediction/microprediction.git
+            pip install --upgrade statsmodels
+            pip install sklearn
+      - name: Fit order parameters
+        run: |
+          python -u fit_arima.py -s ${{ github.event.inputs.name }}
+      - name: Show git status
+        run: | 
+          git status
+      - name: Add data files  
+        run: |
+          git config --local user.name  ${{ github.actor }}
+          git config --local user.email "my@email.com"
+          git add --all           
+      - name: Show git status
+        run: | 
+          git status
+      
+      - name: Commit
+        run: |  
+          git commit -a -m "New order parameters"
+          
+      - name: Show git status
+        run: | 
+          git status
+                    
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
