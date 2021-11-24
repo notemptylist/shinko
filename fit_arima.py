@@ -1,11 +1,14 @@
 import os
 import sys
 import json
+import time
 import random
+import getjson
 import argparse
 import numpy as np
 import pandas as pd
 from math import sqrt
+from urllib.parse import urljoin
 from joblib import Parallel, delayed
 from multiprocessing import cpu_count
 from microprediction import MicroReader
@@ -13,9 +16,9 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from warnings import catch_warnings, filterwarnings
 
-FIT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                        'modelfits',
-                        'arima')
+from fitspec import FIT_PATH, FIT_URL, FitSpec
+
+nlags = 400
 __version__ ='0.0.1'
 MR = MicroReader()
 
@@ -38,11 +41,14 @@ def select_stream():
     sponsored = [x for x in sponsored if '~' not in x]
     return random.choice(list(sponsored))
 
-def make_grid(p_values, d_values, q_values):
+def make_grid():
+    ps = [0, 1, 2, 3, 6]
+    ds = [0, 1, 2]
+    qs = [0, 1, 2]
     order_grid = []
-    for p in p_values:
-        for d in d_values:
-            for q in q_values:
+    for p in ps:
+        for d in ds:
+            for q in qs:
                 order_grid.append((p, d, q))
     return order_grid
 
@@ -63,7 +69,6 @@ def measure_rmse(actual, predicted):
 def walk_forward_validation(data, order):
     predictions = list()
     train, test = train_test_split(data)
-    print(f"Split data: {len(train)} in train, {len(test)} in test.")
     history = [x for x in train]
 
     for i in range(len(test)):
@@ -76,7 +81,7 @@ def walk_forward_validation(data, order):
 
 def score_model(data, order, debug=False):
     result = None
-    key = str(order)
+    key = order
 
     if debug:
         result = walk_forward_validation(data, order)
@@ -91,35 +96,28 @@ def score_model(data, order, debug=False):
 
     if result:
         print(f"> ARIMA({key}) {result}", flush=True)
-    return {key: result}
+    return (key, result)
 
 def grid_search(data, grid, parallel=True):
     """
     Perform grid search over orders in grid against data.
     ntest significes 
     """
-    scores = dict()
+    scores = []
     print(f"Searching grid with {len(data)} elements.")
     if parallel:
-        executor = Parallel(n_jobs=cpu_count(), backend='multiprocessing')
+        executor = Parallel(n_jobs=-2, verbose=10)
         tasks = (delayed(score_model)(data, order) for order in grid)
         results = executor(tasks)
-        for x in results:
-            scores.update(x)
+        scores = results
     else:
-        scores.update({score_model(data, order) for order in grid})
+        scores = [score_model(data, order) for order in grid]
     return scores
 
-def main(args):
-    print(args)
-    nlags = 400
-
-    ps = [0, 1, 3, 4, 6]
-    ds = list(range(0, 3))
-    qs = list(range(0, 3))
-
+def get_work(stream=None):
     while True:
-        stream = select_stream()
+        if not stream:
+            stream = select_stream()
         print(f"Selected stream {stream}")
         df = df_from_lagged(stream)
         if len(df) < 100:
@@ -129,19 +127,42 @@ def main(args):
             print(f"Quantized data, skipping")
             continue
         break
+    grid = make_grid()
+    spec_url = urljoin(FIT_URL, stream)
+    try:
+        print(f"Trying spec url: {spec_url}")
+        spec = getjson(spec_url)
+        spec = FitSpec(**spec)
+        print(f"Got spec from URL {spec}")
+    except:
+        print("Could not find spec, initializing.")
+        spec = FitSpec(stream, 400, grid, [], [])
+        print(spec)
+    return df, spec
 
+def main(args):
+    print(args)
+    workers = cpu_count() - 1
+    nlags = 400
+
+    df, spec = get_work(args.stream)
     if nlags > len(df):
         nlags = len(df)
-
-    grid = make_grid(ps, ds, qs)
-    scores = grid_search(df['y'].values[:nlags], grid)
-    print(scores)
-    scores = sorted(scores, key=scores.get)
+    spec._replace(numlags = nlags)
+    scores = grid_search(df['y'].values[:nlags], random.choices(spec.todo, k=workers))
+    scores = sorted(scores, key=lambda x: x[1])
     best_order = scores[0]
-    print(f"{stream} : best order = {best_order}")
-    fname = os.path.join(FIT_PATH, stream)
+    print(f"{spec.stream} : best order = {best_order}")
+
+    # merge results into spec, remove the processed orders from todo, and write it out.
+    for k in scores:
+        spec.todo.remove(k[0])
+        spec.results.append(k)
+    spec.tstamp.append(time.time())
+    fname = os.path.join(FIT_PATH, spec.stream)
+    print(spec)
     with open(fname, 'w+') as fp:
-        json.dump(scores, fp)
+        json.dump(spec, fp)
 
     return 0
 
@@ -149,6 +170,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # Required positional argument
     parser.add_argument("-n", "--nlags", action="store", dest="nlags", help="Number of laggged values to use for fitting.")
+    parser.add_argument("-s", "--stream", action="store", dest="stream", help="Stream to evaluate.")
     # Optional verbosity counter (eg. -v, -vv, -vvv, etc.)
     parser.add_argument(
         "-v",
