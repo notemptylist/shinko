@@ -122,9 +122,11 @@ def get_work(stream=None):
         df = df_from_lagged(stream)
         if len(df) < 100:
             print(f"Not enough lag values {len(df)}, skipping")
+            stream = None
             continue
         if len(np.unique(df.values)) < 0.3 * len(df.values):
             print(f"Quantized data, skipping")
+            stream = None
             continue
         break
     grid = make_grid()
