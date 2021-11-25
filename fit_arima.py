@@ -148,7 +148,11 @@ def main(args):
     workers = cpu_count() - 1
     nlags = 400
 
+
     df, spec = get_work(args.stream)
+    if len(spec.todo) < 1:
+        print(f"Nothing to do for this stream.")
+        return 0
     if nlags > len(df):
         nlags = len(df)
     spec._replace(numlags = nlags)
