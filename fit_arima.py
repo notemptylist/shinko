@@ -130,7 +130,6 @@ def get_work(stream=None):
             stream = None
             continue
         break
-    grid = make_grid()
     spec_url = urljoin(FIT_URL, stream)
     print(f"Trying spec url: {spec_url}")
     spec = getjson(spec_url)
@@ -138,9 +137,9 @@ def get_work(stream=None):
         print(f"Got spec from URL {spec}")
         spec = FitSpec(*spec)
     else:
+        grid = make_grid()
         print("Could not find spec, initializing.")
         spec = FitSpec(stream, 400, grid, [], [])
-        print(spec)
     return df, spec
 
 def main(args):
@@ -150,13 +149,17 @@ def main(args):
 
 
     df, spec = get_work(args.stream)
-    if len(spec.todo) < 1:
+    spec._replace(numlags = nlags)
+    ntodo = len(spec.todo)
+    if ntodo <1:
         print(f"Nothing to do for this stream.")
         return 0
+    ndone = len(spec.results)
+    print(f"Spec for {spec.stream}:\nProgress: {ndone}/{ntodo} {ndone/ntodo*100}%")
     if nlags > len(df):
         nlags = len(df)
-    spec._replace(numlags = nlags)
-    scores = grid_search(df['y'].values[:nlags], random.choices(spec.todo, k=workers))
+    k = min(ntodo, workers)
+    scores = grid_search(df['y'].values[:nlags], random.choices(spec.todo, k=k))
     scores = sorted(scores, key=lambda x: x[1])
     best_order = scores[0]
     print(f"{spec.stream} : best order = {best_order}")
