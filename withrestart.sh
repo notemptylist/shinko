@@ -4,7 +4,6 @@ runit() {
     bash ./fitsome.sh
 }
 
-until runit; do
-    echo "Stopped wtih exit code $?. Restarting..";
+while runit; do
     sleep 30;
 done
