@@ -60,7 +60,11 @@ jobs:
       - name: Show git status
         run: | 
           git status
-                    
+      
+      - name: Rebase
+        run: |
+          git pull --rebase
+          
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
