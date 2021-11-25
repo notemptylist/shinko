@@ -5,5 +5,6 @@ runit() {
 }
 
 while runit; do
-    sleep 1212121212121212121212120;
+    echo "Sleeping...";
+    sleep 120;
 done
