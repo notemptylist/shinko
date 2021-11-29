@@ -155,7 +155,8 @@ def main(args):
         print(f"Nothing to do for this stream.")
         return 0
     ndone = len(spec.results)
-    print(f"Spec for {spec.stream}:\nProgress: {ndone}/{ntodo} {ndone/ntodo*100:.2f}%")
+    ntotal = ndone + ntodo
+    print(f"Spec for {spec.stream}:\nProgress: {ndone}/{ntodo} {ndone/ntotal*100:.2f}%")
     if nlags > len(df):
         nlags = len(df)
     k = min(ntodo, workers)
