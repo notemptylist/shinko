@@ -6,5 +6,5 @@ runit() {
 
 while runit; do
     echo "Sleeping...";
-    sleep 20;
+    sleep 2;
 done
