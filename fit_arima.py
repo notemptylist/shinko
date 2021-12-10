@@ -39,7 +39,7 @@ def select_stream():
     prizes = mr.get_prizes()
     sponsors = random.choice([item['sponsor'] for item in prizes])
     sponsored = mr.get_sponsors()
-    sponsored = [x for x in sponsored if '~' not in x]
+    sponsored = [x[0] for x in sponsored.items() if '~' not in x[1] and sponsors == x[1]]
     return random.choice(list(sponsored))
 
 def make_grid():
