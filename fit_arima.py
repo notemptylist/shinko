@@ -16,7 +16,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from warnings import catch_warnings, filterwarnings
 
-from fitspec import FIT_PATH, FIT_URL, FitSpec
+from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec
 
 nlags = 400
 __version__ ='0.0.1'
@@ -39,7 +39,7 @@ def select_stream():
     prizes = mr.get_prizes()
     sponsor = mr.animal_from_code(random.choice([item['sponsor'] for item in prizes]))
     sponsored = mr.get_sponsors()
-    sponsored = [x[0] for x in sponsored.items() if '~' not in x[0] and sponsor == x[1]]
+    #sponsored = [x[0] for x in sponsored.items() if '~' not in x[0] and sponsor == x[1]]
     return random.choice(list(sponsored))
 
 def make_grid():
@@ -115,6 +115,14 @@ def grid_search(data, grid, parallel=True):
         scores = [score_model(data, order) for order in grid]
     return scores
 
+def convert_to_dict(spec):
+    d = make_spec()
+    d['stream'] = spec.stream
+    d['todo'] = spec.todo
+    d['numlags'] = spec.numlags
+    d['results'] = [{ 'order': x[0], 'rmse': x[1], 'mean': None } for x in spec.results]
+    return d
+
 def get_work(stream=None):
     while True:
         if not stream:
@@ -135,11 +143,18 @@ def get_work(stream=None):
     spec = getjson(spec_url)
     if spec:
         print(f"Got spec from URL {spec}")
-        spec = FitSpec(*spec)
+        if isinstance(spec, list):
+            print(f"Spec must be in list form.")
+            print("Converting spec...")
+            spec = FitSpec(*spec)
+            spec = convert_to_dict(spec)
+            print(f"Converted: {spec}")
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
-        spec = FitSpec(stream, 400, grid, [], [])
+        spec : fitspec = make_spec()
+        spec['stream'] = stream
+        spec['todo'] = grid
     return df, spec
 
 def main(args):
@@ -149,33 +164,32 @@ def main(args):
 
 
     df, spec = get_work(args.stream)
-    spec._replace(numlags = nlags)
-    ntodo = len(spec.todo)
+    spec['numlags'] = nlags
+    ntodo = len(spec['todo'])
     if ntodo <1:
         print(f"Nothing to do for this stream.")
         return 0
-    ndone = len(spec.results)
+    ndone = len(spec['results'])
     ntotal = ndone + ntodo
-    print(f"Spec for {spec.stream}:\nProgress: {ndone}:{ntodo} {ndone/ntotal*100:.2f}%")
+    print(f"Spec for {spec['stream']}:\nProgress: {ndone}:{ntodo} {ndone/ntotal*100:.2f}%")
     if nlags > len(df):
         nlags = len(df)
     k = min(ntodo, workers)
-    todos = spec.todo.copy()
+    todos = spec['todo'].copy()
     random.shuffle(todos)
     scores = grid_search(df['y'].values[:nlags], todos[:k])
     scores = sorted(scores, key=lambda x: x[1])
     best_order = scores[0]
-    print(f"{spec.stream} : best order = {best_order}")
+    print(f"{spec['stream']} : best order = {best_order}")
 
     # merge results into spec, remove the processed orders from todo, and write it out.
     for k in scores:
         try:
-            spec.todo.remove(k[0])
+            spec['todo'].remove(k[0])
         except ValueError:
             pass
-        spec.results.append(k)
-    spec.tstamp.append(time.time())
-    fname = os.path.join(FIT_PATH, spec.stream)
+        spec['results'].append(k)
+    fname = os.path.join(FIT_PATH, spec['stream'])
     print(spec)
     with open(fname, 'w+') as fp:
         json.dump(spec, fp)
