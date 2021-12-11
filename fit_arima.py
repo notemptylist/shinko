@@ -164,7 +164,6 @@ def main(args):
 
 
     df, spec = get_work(args.stream)
-    spec['numlags'] = nlags
     ntodo = len(spec['todo'])
     if ntodo <1:
         print(f"Nothing to do for this stream.")
@@ -174,6 +173,7 @@ def main(args):
     print(f"Spec for {spec['stream']}:\nProgress: {ndone}:{ntodo} {ndone/ntotal*100:.2f}%")
     if nlags > len(df):
         nlags = len(df)
+    spec['numlags'] = nlags
     k = min(ntodo, workers)
     todos = spec['todo'].copy()
     random.shuffle(todos)
