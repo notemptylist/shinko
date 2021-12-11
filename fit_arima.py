@@ -148,7 +148,8 @@ def get_work(stream=None):
             print(f"Spec must be in list form, converting...")
             spec = FitSpec(*spec)
             spec = convert_to_dict(spec)
-            pprint(f"Converted: {spec}")
+            print("Converted:")
+            pprint(spec)
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
