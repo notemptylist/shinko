@@ -5,7 +5,16 @@ FIT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                         'modelfits',
                         'arima')
 FitSpec = namedtuple('FitSpec', ['stream', 'numlags', 'todo', 'results', 'tstamp'])
-
+fitdict = {'stream': '',
+           'numlags': 0,
+           'todo' : [],
+           'results': [],
+           'tstamp': []
+           }
+fitresult = { 'order': [0,0,0],
+              'rmse': 0,
+              'mean': 0,
+            }
 if __name__ == "__main__":
     import json
     fs = FitSpec('foo.json', 400, [(0,0,1), (1, 6, 0)], [ ((1,1,1), .90) ], [])
