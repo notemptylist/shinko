@@ -193,7 +193,7 @@ def main(args):
             pass
         spec['results'].append(k)
     fname = os.path.join(FIT_PATH, spec['stream'])
-    print(spec)
+    pprint(spec)
     with open(fname, 'w+') as fp:
         json.dump(spec, fp)
 
