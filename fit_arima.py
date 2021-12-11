@@ -144,8 +144,7 @@ def get_work(stream=None):
     if spec:
         print(f"Got spec from URL {spec}")
         if isinstance(spec, list):
-            print(f"Spec must be in list form.")
-            print("Converting spec...")
+            print(f"Spec must be in list form. Converting ...")
             spec = FitSpec(*spec)
             spec = convert_to_dict(spec)
             print(f"Converted: {spec}")
