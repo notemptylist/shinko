@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from math import sqrt
+from pprint import pprint
 from getjson import getjson
 from urllib.parse import urljoin
 from joblib import Parallel, delayed
@@ -142,18 +143,19 @@ def get_work(stream=None):
     print(f"Trying spec url: {spec_url}")
     spec = getjson(spec_url)
     if spec:
-        print(f"Got spec from URL {spec}")
+        pprint(f"Got spec from URL {spec}")
         if isinstance(spec, list):
-            print(f"Spec must be in list form. Converting ...")
+            print(f"Spec must be in list form, converting...")
             spec = FitSpec(*spec)
             spec = convert_to_dict(spec)
-            print(f"Converted: {spec}")
+            pprint(f"Converted: {spec}")
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
         spec : fitspec = make_spec()
         spec['stream'] = stream
         spec['todo'] = grid
+        pprint(f"Initialized: {spec}")
     return df, spec
 
 def main(args):
