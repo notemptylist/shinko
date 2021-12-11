@@ -143,20 +143,21 @@ def get_work(stream=None):
     print(f"Trying spec url: {spec_url}")
     spec = getjson(spec_url)
     if spec:
-        pprint(f"Got spec from URL {spec}")
+        print(f"Got spec from URL:")
+        pprint(spec)
         if isinstance(spec, list):
             print(f"Spec must be in list form, converting...")
             spec = FitSpec(*spec)
             spec = convert_to_dict(spec)
             print("Converted:")
-            pprint(spec)
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
         spec : fitspec = make_spec()
         spec['stream'] = stream
         spec['todo'] = grid
-        pprint(f"Initialized: {spec}")
+        print("Initialized:")
+    pprint(spec)
     return df, spec
 
 def main(args):
