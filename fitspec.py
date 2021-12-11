@@ -1,17 +1,11 @@
 import os
 from collections import namedtuple
-from typing import Type, TypedDict
+from typing import List, TypedDict
 FIT_URL = 'https://raw.githubusercontent.com/notemptylist/shinko/main/modelfits/arima/'
 FIT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                         'modelfits',
                         'arima')
 FitSpec = namedtuple('FitSpec', ['stream', 'numlags', 'todo', 'results', 'tstamp'])
-fitdict = {'stream': '',
-           'numlags': 0,
-           'todo' : [],
-           'results': [],
-           'tstamp': []
-           }
 
 class fitresult(TypedDict):
     order: tuple
@@ -22,9 +16,8 @@ class fitresult(TypedDict):
 class fitspec(TypedDict):
     stream: str
     numlags: int
-    todo: list[tuple]
-    results: list[fitresult]
-
+    todo: List[tuple]
+    results: List[fitresult]
 
 if __name__ == "__main__":
     import json
