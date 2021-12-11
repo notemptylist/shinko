@@ -160,7 +160,9 @@ def main(args):
     if nlags > len(df):
         nlags = len(df)
     k = min(ntodo, workers)
-    scores = grid_search(df['y'].values[:nlags], random.shuffle(spec.todo[:k]))
+    todos = spec.todo.copy()
+    random.shuffle(todos)
+    scores = grid_search(df['y'].values[:nlags], todos[:k])
     scores = sorted(scores, key=lambda x: x[1])
     best_order = scores[0]
     print(f"{spec.stream} : best order = {best_order}")
