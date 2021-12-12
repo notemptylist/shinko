@@ -181,7 +181,7 @@ def main(args):
     todos = spec['todo'].copy()
     random.shuffle(todos)
     scores = grid_search(df['y'].values[:nlags], todos[:k])
-    scores = sorted(scores, key=lambda x: x[1])
+    scores = sorted(scores, key=lambda x: x['rmse'])
     best_order = scores[0]
     mean = df['y'].mean()
     print(f"{spec['stream']} : mean: {mean} spec[] best order = {best_order}")
