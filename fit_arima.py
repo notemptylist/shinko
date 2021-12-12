@@ -170,6 +170,8 @@ def main(args):
     ntodo = len(spec['todo'])
     if ntodo <1:
         print(f"Nothing to do for this stream.")
+        spec['todo'] = make_grid()
+        print(f"Now there is")
         return 0
     ndone = len(spec['results'])
     ntotal = ndone + ntodo
