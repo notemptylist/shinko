@@ -98,7 +98,7 @@ def score_model(data, order, debug=False):
 
     if result:
         print(f"> ARIMA({key}) {result}", flush=True)
-    return (key, result)
+    return {'order': key, 'rmse': result}
 
 def grid_search(data, grid, parallel=True):
     """
@@ -121,7 +121,7 @@ def convert_to_dict(spec):
     d['stream'] = spec.stream
     d['todo'] = spec.todo
     d['numlags'] = spec.numlags
-    d['results'] = [{ 'order': x[0], 'rmse': x[1], 'mean': None } for x in spec.results]
+    d['results'] = [{ 'order': x[0], 'rmse': x[1] } for x in spec.results]
     return d
 
 def get_work(stream=None):
@@ -187,9 +187,10 @@ def main(args):
     print(f"{spec['stream']} : mean: {mean} spec[] best order = {best_order}")
 
     # merge results into spec, remove the processed orders from todo, and write it out.
+    now = time.time()
     for k in scores:
         k['mean'] = mean
-        k['tstamp'] = time.time()
+        k['tstamp'] = now
         try:
             spec['todo'].remove(k[0])
         except ValueError:
