@@ -188,6 +188,8 @@ def main(args):
 
     # merge results into spec, remove the processed orders from todo, and write it out.
     for k in scores:
+        k['mean'] = mean
+        k['tstamp'] = time.now()
         try:
             spec['todo'].remove(k[0])
         except ValueError:
