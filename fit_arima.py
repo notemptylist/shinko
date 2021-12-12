@@ -160,6 +160,11 @@ def get_work(stream=None):
     pprint(spec)
     return df, spec
 
+def dumpit(spec):
+    fname = os.path.join(FIT_PATH, spec['stream'])
+    with open(fname, 'w+') as fp:
+        json.dump(spec, fp)
+
 def main(args):
     print(args)
     workers = cpu_count() - 1
@@ -171,8 +176,7 @@ def main(args):
     if ntodo <1:
         print(f"Nothing to do for this stream.")
         spec['todo'] = make_grid()
-        with open(fname, 'w+') as fp:
-            json.dump(spec, fp)
+        dumpit(spec)
         print(f"Now there is")
         return 0
     ndone = len(spec['results'])
@@ -200,10 +204,8 @@ def main(args):
         except ValueError:
             pass
         spec['results'].append(k)
-    fname = os.path.join(FIT_PATH, spec['stream'])
     pprint(spec)
-    with open(fname, 'w+') as fp:
-        json.dump(spec, fp)
+    dumpit(spec)
 
     return 0
 
