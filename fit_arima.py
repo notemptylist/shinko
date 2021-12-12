@@ -119,7 +119,7 @@ def grid_search(data, grid, parallel=True):
 def convert_to_dict(spec):
     d = make_spec()
     d['stream'] = spec.stream
-    d['todo'] = spec.todo
+    d['todo'] = [tuple(x) for x in spec.todo]
     d['numlags'] = spec.numlags
     d['results'] = [{ 'order': x[0], 'rmse': x[1] } for x in spec.results]
     return d
