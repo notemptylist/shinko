@@ -192,7 +192,7 @@ def main(args):
         k['mean'] = mean
         k['tstamp'] = now
         try:
-            spec['todo'].remove(k[0])
+            spec['todo'].remove(k['order'])
         except ValueError:
             pass
         spec['results'].append(k)
