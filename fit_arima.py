@@ -163,7 +163,7 @@ def get_work(stream=None):
 def dumpit(spec):
     fname = os.path.join(FIT_PATH, spec['stream'])
     with open(fname, 'w+') as fp:
-        json.dump(spec, fp)
+        json.dump(spec, fp, sort_keys=True, indent=4)
 
 def main(args):
     print(args)
