@@ -183,7 +183,8 @@ def main(args):
     scores = grid_search(df['y'].values[:nlags], todos[:k])
     scores = sorted(scores, key=lambda x: x[1])
     best_order = scores[0]
-    print(f"{spec['stream']} : best order = {best_order}")
+    mean = df['y'].mean()
+    print(f"{spec['stream']} : mean: {mean} spec[] best order = {best_order}")
 
     # merge results into spec, remove the processed orders from todo, and write it out.
     for k in scores:
