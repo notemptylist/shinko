@@ -171,6 +171,8 @@ def main(args):
     if ntodo <1:
         print(f"Nothing to do for this stream.")
         spec['todo'] = make_grid()
+        with open(fname, 'w+') as fp:
+            json.dump(spec, fp)
         print(f"Now there is")
         return 0
     ndone = len(spec['results'])
