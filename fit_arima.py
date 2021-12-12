@@ -192,7 +192,7 @@ def main(args):
     scores = sorted(scores, key=lambda x: x['rmse'])
     best_order = scores[0]
     mean = df['y'].mean()
-    print(f"{spec['stream']} : mean: {mean} spec[] best order = {best_order}")
+    print(f"{spec['stream']} : mean: {mean} best order : {best_order}")
 
     # merge results into spec, remove the processed orders from todo, and write it out.
     now = time.time()
