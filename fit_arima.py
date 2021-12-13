@@ -207,6 +207,8 @@ def main(args):
         except ValueError:
             pass
         spec['results'].append(k)
+    if not getattr(spec, 'version'):
+        spec['version'] = fitspec_version
     pprint(spec)
     dumpit(spec)
 
