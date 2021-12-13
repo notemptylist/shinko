@@ -17,7 +17,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from warnings import catch_warnings, filterwarnings
 
-from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec
+from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec, fitspec_version
 
 nlags = 400
 __version__ = '0.0.1'

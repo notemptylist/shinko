@@ -9,6 +9,7 @@ FIT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                         'arima')
 FitSpec = namedtuple('FitSpec', ['stream', 'numlags', 'todo', 'results', 'tstamp'])
 
+fitspec_version = '0.1'
 class fitresult(TypedDict):
     order: tuple
     rmse: float
@@ -26,6 +27,7 @@ def make_spec():
                   'numlags': 0,
                   'todo': [],
                   'results': [],
+                  'version': fitspec_version
                   }
     return s
 
@@ -39,7 +41,8 @@ if __name__ == "__main__":
                         'rmse': .90,
                         'mean': .20,
                         'tstamp': 12312312312
-                        }, ]
+                        }, ],
+                  'version': fitspec_version
                    }
     print(fs)
     print(isinstance(fs, dict))
