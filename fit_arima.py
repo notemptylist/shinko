@@ -20,7 +20,7 @@ from warnings import catch_warnings, filterwarnings
 from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec
 
 nlags = 400
-__version__ ='0.0.1'
+__version__ = '0.0.1'
 MR = MicroReader()
 
 def df_from_lagged(name='die.json'):
