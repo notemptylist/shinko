@@ -180,12 +180,15 @@ def main(args):
 
     df, spec = get_work(args.stream)
     ntodo = len(spec['todo'])
+
     if ntodo <1:
         print(f"Nothing to do for this stream.")
+        # do something better. 
         spec['todo'] = make_grid()
         dumpit(spec)
         print(f"Now there is")
         return 0
+
     ndone = len(spec['results'])
     ntotal = ndone + ntodo
     print(f"Spec for {spec['stream']}:\nProgress: {ndone}:{ntodo} {ndone/ntotal*100:.2f}%")
@@ -210,6 +213,9 @@ def main(args):
             spec['todo'].remove(k['order'])
         except ValueError:
             pass
+        for item in spec['results']:
+            if item['order'] == k['order']:
+                del item
         spec['results'].append(k)
     if not getattr(spec, 'version', None):
         spec['version'] = fitspec_version
