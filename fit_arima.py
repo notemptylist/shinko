@@ -127,6 +127,13 @@ def convert_to_dict(spec):
     d['results'] = [{ 'order': x[0], 'rmse': x[1] } for x in spec.results]
     return d
 
+def check_and_convert(spec):
+    if isinstance(spec, list):
+        print(f"Spec must be in list form, converting...")
+        spec = FitSpec(*spec)
+        spec = convert_to_dict(spec)
+    return spec
+
 def get_work(stream=None):
     while True:
         if not stream:
@@ -148,11 +155,8 @@ def get_work(stream=None):
     if spec:
         print(f"Got spec from URL:")
         pprint(spec)
-        if isinstance(spec, list):
-            print(f"Spec must be in list form, converting...")
-            spec = FitSpec(*spec)
-            spec = convert_to_dict(spec)
-            print("Converted:")
+        spec = check_and_convert(spec)
+        print("Converted:")
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
