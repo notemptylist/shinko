@@ -184,10 +184,11 @@ def main(args):
     if ntodo <1:
         print(f"Nothing to do for this stream.")
         # do something better. 
-        spec['todo'] = make_grid()
-        dumpit(spec)
+        spec['todo'] = [random.choice(make_grid())]
+        #dumpit(spec)
         print(f"Now there is")
-        return 0
+        #return 0
+        ntodo = len(spec['todo'])
 
     ndone = len(spec['results'])
     ntotal = ndone + ntodo
@@ -214,6 +215,9 @@ def main(args):
         except ValueError:
             pass
         for item in spec['results']:
+            if isinstance(item, list):
+                del item
+                continue
             if item['order'] == k['order']:
                 del item
         spec['results'].append(k)
