@@ -425,6 +425,16 @@
             ],
             "rmse": 92.18441790581758,
             "tstamp": 1639575221.613119
+        },
+        {
+            "mean": 876.3113636,
+            "order": [
+                3,
+                1,
+                1
+            ],
+            "rmse": 96.4204146944183,
+            "tstamp": 1639576384.822911
         }
     ],
     "stream": "electricity-load-nyiso-mhk_valley.json",
