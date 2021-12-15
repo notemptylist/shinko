@@ -380,6 +380,16 @@
             ],
             "rmse": 26.41462374975935,
             "tstamp": 1639564917.5199978
+        },
+        {
+            "mean": 27.33501,
+            "order": [
+                1,
+                2,
+                0
+            ],
+            "rmse": 7.9735438185476335,
+            "tstamp": 1639575252.0595508
         }
     ],
     "stream": "electricity-lbmp-nyiso-mhk_valley.json",
