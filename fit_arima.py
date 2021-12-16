@@ -219,7 +219,7 @@ def main(args):
                 del item
                 continue
             if item['order'] == k['order']:
-                del item
+                spec['results'].remove(item)
         spec['results'].append(k)
     if not getattr(spec, 'version', None):
         spec['version'] = fitspec_version
