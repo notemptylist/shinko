@@ -425,6 +425,16 @@
             ],
             "rmse": 2.207831460437006,
             "tstamp": 1639576249.8017607
+        },
+        {
+            "mean": 32.408,
+            "order": [
+                6,
+                2,
+                1
+            ],
+            "rmse": 3.888389418826622,
+            "tstamp": 1639630391.1420226
         }
     ],
     "stream": "electricity-lbmp-nyiso-dunwod.json",
