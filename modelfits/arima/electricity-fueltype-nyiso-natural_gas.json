@@ -372,15 +372,20 @@
             ],
             "rmse": 351.94530297683923,
             "tstamp": 1639802417.211315
+        },
+        {
+            "mean": 2282.613,
+            "order": [
+                0,
+                0,
+                1
+            ],
+            "rmse": 675.776218376381,
+            "tstamp": 1639861807.3366275
         }
     ],
     "stream": "electricity-fueltype-nyiso-natural_gas.json",
     "todo": [
-        [
-            0,
-            0,
-            1
-        ],
         [
             1,
             2,
