@@ -214,12 +214,9 @@ def main(args):
             spec['todo'].remove(k['order'])
         except ValueError:
             pass
-        for item in spec['results']:
-            if isinstance(item, list):
-                del item
-                continue
-            if item['order'] == k['order']:
-                spec['results'].remove(item)
+        
+        spec['results'] = [x for x in spec['results'] if not isinstance(x, list) and
+                            x['order'] != k['order']]
         spec['results'].append(k)
     if not getattr(spec, 'version', None):
         spec['version'] = fitspec_version
