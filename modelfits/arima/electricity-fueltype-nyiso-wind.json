@@ -430,6 +430,16 @@
             ],
             "rmse": 255.86503478718237,
             "tstamp": 1639951924.2707353
+        },
+        {
+            "mean": 567.092,
+            "order": [
+                1,
+                0,
+                1
+            ],
+            "rmse": 273.88904815842943,
+            "tstamp": 1640006700.281779
         }
     ],
     "stream": "electricity-fueltype-nyiso-wind.json",
