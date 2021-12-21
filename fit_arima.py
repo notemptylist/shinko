@@ -54,7 +54,7 @@ def make_grid():
     for p in ps:
         for d in ds:
             for q in qs:
-                order_grid.append((p, d, q))
+                order_grid.append([p, d, q])
     return order_grid
 
 def arima_forecast(data, order):
