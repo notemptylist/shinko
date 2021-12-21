@@ -47,9 +47,9 @@ def select_stream():
     return random.choice(list(sponsored))
 
 def make_grid():
-    ps = [0, 1, 2, 3, 6]
-    ds = [0, 1, 2]
-    qs = [0, 1, 2]
+    ps = [0, 1, 2, 3, 4, 5, 6]
+    ds = [0, 1, 3]
+    qs = [0, 1, 3]
     order_grid = []
     for p in ps:
         for d in ds:
@@ -61,8 +61,8 @@ def arima_forecast(data, order):
     """Create an ARIMA model, fit it and make a single out of sample prediction."""
     model = ARIMA(data, order=order)
     model_fit = model.fit()
-    yhat = model_fit.predict(len(data), len(data))
-    return yhat[0]
+    yhat = model_fit.predict(len(data), len(data)+1)
+    return yhat[-1]
 
 def train_test_split(data):
     s = int(len(data) * 0.66)
@@ -77,7 +77,7 @@ def walk_forward_validation(data, order):
     history = [x for x in train]
 
     for i in range(len(test)):
-        yhat = arima_forecast(data, order)
+        yhat = arima_forecast(history, order)
         predictions.append(yhat)
         history.append(test[i])
 
