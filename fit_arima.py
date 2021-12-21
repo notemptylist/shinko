@@ -186,7 +186,7 @@ def main(args):
         # do something better. 
         spec['todo'] = [random.choice(make_grid())]
         #dumpit(spec)
-        print(f"Now there is")
+        print(f"Now there is {spec['todo']}")
         #return 0
         ntodo = len(spec['todo'])
 
