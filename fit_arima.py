@@ -61,8 +61,9 @@ def arima_forecast(data, order):
     """Create an ARIMA model, fit it and make a single out of sample prediction."""
     model = ARIMA(data, order=order)
     model_fit = model.fit()
-    yhat = model_fit.predict(len(data), len(data)+1)
-    return yhat[-1]
+    start = end = len(data)
+    yhat = model_fit.predict(start, end)
+    return yhat[0]
 
 def train_test_split(data):
     s = int(len(data) * 0.66)
