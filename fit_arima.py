@@ -133,6 +133,7 @@ def check_and_convert(spec):
         print(f"Spec must be in list form, converting...")
         spec = FitSpec(*spec)
         spec = convert_to_dict(spec)
+        print("Converted:")
     return spec
 
 def get_work(stream=None):
@@ -157,7 +158,6 @@ def get_work(stream=None):
         print(f"Got spec from URL:")
         pprint(spec)
         spec = check_and_convert(spec)
-        print("Converted:")
     else:
         grid = make_grid()
         print("Could not find spec, initializing.")
