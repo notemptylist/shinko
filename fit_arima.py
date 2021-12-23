@@ -156,7 +156,6 @@ def get_work(stream=None):
     spec = getjson(spec_url)
     if spec:
         print(f"Got spec from URL:")
-        pprint(spec)
         spec = check_and_convert(spec)
     else:
         grid = make_grid()
@@ -223,7 +222,6 @@ def main(args):
         spec['version'] = fitspec_version
     pprint(spec)
     dumpit(spec)
-
     return 0
 
 if __name__ == '__main__':
