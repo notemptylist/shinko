@@ -100,15 +100,20 @@
             ],
             "rmse": 0.6657349589447636,
             "tstamp": 1640297527.5406969
+        },
+        {
+            "mean": 0.7201834577280584,
+            "order": [
+                0,
+                0,
+                0
+            ],
+            "rmse": 0.9198058565443362,
+            "tstamp": 1640315420.8842976
         }
     ],
     "stream": "z1~electricity-fueltype-nyiso-other_fossil_fuels~70.json",
     "todo": [
-        [
-            0,
-            0,
-            0
-        ],
         [
             0,
             0,
