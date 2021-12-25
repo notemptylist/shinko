@@ -38,7 +38,7 @@ def df_from_lagged(name='die.json'):
 def select_stream():
     mr = MicroReader()
     prizes = mr.get_prizes()
-    sponsor = mr.animal_from_code(random.choice([item['sponsor'] for item in prizes]))
+    sponsor = mr.animal_from_code(random.choice([item['sponsor'] for item in prizes if item['sponsor'] != 'Fathom Gazelle']))
     print(f'Picked sponsor: {sponsor}')
     sponsored = mr.get_sponsors()
     sponsored = [x[0] for x in sponsored.items() 
