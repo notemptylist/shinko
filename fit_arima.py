@@ -39,12 +39,14 @@ def select_stream():
     mr = MicroReader()
     prizes = mr.get_prizes()
     sponsor = mr.animal_from_code(random.choice([item['sponsor'] for item in prizes]))
+    print(f'Picked sponsor: {sponsor}')
     sponsored = mr.get_sponsors()
     sponsored = [x[0] for x in sponsored.items() 
-                if 'z3~' not in x[0] 
+                if '~' not in x[0] 
                 and sponsor == x[1]
-                and 'z2~' not in x[0]]
-    return random.choice(list(sponsored))
+                ]
+    stream = random.choice(list(sponsored))
+    return stream
 
 def make_grid():
     ps = [0, 1, 2, 3, 4, 5, 6]
