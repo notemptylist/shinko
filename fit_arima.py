@@ -18,7 +18,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from warnings import catch_warnings, filterwarnings
 
-from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec, fitspec_version
+from fitspec import FIT_PATH, FIT_URL, FitSpec, fitresult, fitspec, make_spec, fitspec_version
 xray_names = get_xray_stock_names()
 nlags = 400
 __version__ = '0.0.1'
@@ -83,8 +83,6 @@ def walk_forward_validation(data, order):
 
 def score_model(data, order, debug=False):
     result = None
-    key = order
-
     if debug:
         result = walk_forward_validation(data, order)
     else:
@@ -97,8 +95,10 @@ def score_model(data, order, debug=False):
             print(ex) 
 
     if result:
-        print(f"> ARIMA({key}) {result}", flush=True)
-    return {'order': key, 'rmse': result}
+        print(f"> ARIMA({order}) {result}", flush=True)
+        return {'order': order, 'rmse': result}
+    else:
+        return {'order': order, 'rmse': float('inf')}
 
 def grid_search(data, grid, parallel=True):
     """
