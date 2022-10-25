@@ -13,12 +13,13 @@ from urllib.parse import urljoin
 from joblib import Parallel, delayed
 from multiprocessing import cpu_count
 from microprediction import MicroReader
+from microprediction.live.xraytickers import get_xray_stock_names
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from warnings import catch_warnings, filterwarnings
 
 from fitspec import FIT_PATH, FIT_URL, FitSpec, fitspec, make_spec, fitspec_version
-
+xray_names = get_xray_stock_names()
 nlags = 400
 __version__ = '0.0.1'
 MR = MicroReader()
@@ -37,15 +38,8 @@ def df_from_lagged(name='die.json'):
 
 def select_stream():
     mr = MicroReader()
-    prizes = mr.get_prizes()
-    sponsor = mr.animal_from_code(random.choice([item['sponsor'] for item in prizes if item['sponsor'] != 'Fathom Gazelle']))
-    print(f'Picked sponsor: {sponsor}')
-    sponsored = mr.get_sponsors()
-    sponsored = [x[0] for x in sponsored.items() 
-                if '~' not in x[0] 
-                and sponsor == x[1]
-                ]
-    stream = random.choice(list(sponsored))
+    animal = mr.animal_from_code('6ebd03ad1eec6897b9414ff2a1b4501a')
+    stream = random.choice(xray_names)
     return stream
 
 def make_grid():
